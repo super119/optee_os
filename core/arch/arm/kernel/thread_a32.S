@@ -363,7 +363,8 @@ END_FUNC thread_unwind_user_mode
 		 * Since the translation table could reside above 4GB we'll
 		 * have to use 64-bit arithmetics.
 		 */
-		subs	r0, r0, #CORE_MMU_BASE_TABLE_OFFSET
+		mov	r8, #CORE_MMU_BASE_TABLE_OFFSET
+		subs	r0, r0, r8
 		sbc	r1, r1, #0
 #endif
 		bic	r1, r1, #BIT(TTBR_ASID_SHIFT - 32)
@@ -815,7 +816,8 @@ eret_to_user_mode:
 #ifdef CFG_WITH_LPAE
 	read_ttbr0_64bit r0, r1
 #ifdef CFG_CORE_UNMAP_CORE_AT_EL0
-	add	r0, r0, #CORE_MMU_BASE_TABLE_OFFSET
+	mov	r8, #CORE_MMU_BASE_TABLE_OFFSET
+	add	r0, r0, r8
 #endif
 	/* switch to user ASID */
 	orr	r1, r1, #BIT(TTBR_ASID_SHIFT - 32)
@@ -877,7 +879,8 @@ icache_inv_user_range:
 	/* switch to user ASID */
 	orr	r3, r7, #BIT(TTBR_ASID_SHIFT - 32)
 #ifdef CFG_CORE_UNMAP_CORE_AT_EL0
-	add	r2, r6, #CORE_MMU_BASE_TABLE_OFFSET
+	mov	r8, #CORE_MMU_BASE_TABLE_OFFSET
+	add	r2, r6, r8
 	write_ttbr0_64bit r2, r3
 #else
 	write_ttbr0_64bit r6, r3
